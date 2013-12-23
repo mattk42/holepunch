@@ -1,4 +1,5 @@
 class AwsAccountsController < ApplicationController
+  before_filter :authenticate_user!
   before_action :set_aws_account, only: [:show, :edit, :update, :destroy]
 
   # GET /aws_accounts
@@ -10,6 +11,14 @@ class AwsAccountsController < ApplicationController
   # GET /aws_accounts/1
   # GET /aws_accounts/1.json
   def show
+    ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key)
+    @regions=Hash.new
+    ec2.regions.each do |region|
+      r_instances = region.instances
+      if r_instances.count > 0
+        @regions[region.name]=r_instances
+      end
+    end
   end
 
   # GET /aws_accounts/new
@@ -25,6 +34,7 @@ class AwsAccountsController < ApplicationController
   # POST /aws_accounts.json
   def create
     @aws_account = AwsAccount.new(aws_account_params)
+    @aws_account.account_id=current_user.account_id
 
     respond_to do |format|
       if @aws_account.save

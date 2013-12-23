@@ -1,0 +1,2 @@
+module AwsAccounts::InstancesHelper
+end

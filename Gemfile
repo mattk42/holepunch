@@ -55,3 +55,9 @@ gem "twitter-bootstrap-rails"
 
 # Use cancan for controlling who can see what
 gem 'cancan'
+
+# Use old style of protected attributes
+gem 'protected_attributes'
+
+# AWS SDK
+gem 'aws-sdk'

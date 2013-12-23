@@ -1,5 +1,16 @@
 Holepunch::Application.routes.draw do
-  resources :aws_accounts
+  resources :accounts, :only => [:index, :new, :create, :destroy]
+
+  resources :aws_accounts do
+    scope module: :aws_accounts do
+      resources :regions do
+        scope module: :regions do
+          resources :instances
+        end
+      end
+    end
+  end
+
 
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.

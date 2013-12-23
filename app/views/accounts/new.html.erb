@@ -1,0 +1,20 @@
+<h2>Create Account</h2>
+
+<%= form_for(@account) do |f| %>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <%= f.fields_for :users do |user_form| %>
+    <div class="field"><%= user_form.label :email %><br />
+    <%= user_form.email_field :email %></div>
+    <div class="field"><%= user_form.label :password %><br />
+    <%= user_form.password_field :password %></div>
+    <div class="field"><%= user_form.label :password_confirmation %><br />
+    <%= user_form.password_field :password_confirmation %></div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit "Create account" %>
+  </div>
+<% end %>

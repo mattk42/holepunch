@@ -1,0 +1,5 @@
+<%= @instance.id %>
+<%= @instance.security_groups.each do |sg| %>
+	<%= sg.name %>
+	<%= sg.description %>
+<% end %>
