@@ -41,6 +41,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
+    dalli (2.6.4)
     devise (3.2.2)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -64,6 +65,7 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    memcachier (0.0.2)
     mime-types (1.25.1)
     minitest (4.7.5)
     multi_json (1.8.2)
@@ -138,10 +140,12 @@ DEPENDENCIES
   aws-sdk
   cancan
   coffee-rails (~> 4.0.0)
+  dalli
   devise
   devise_invitable
   jbuilder (~> 1.2)
   jquery-rails
+  memcachier
   protected_attributes
   rails (= 4.0.1)
   sass-rails (~> 4.0.0)

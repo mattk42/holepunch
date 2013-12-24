@@ -15,7 +15,7 @@
     <% @regions.each do |name,instances| %>
       <% instances.each do |instance| %>
         <tr>
-          <td><%= link_to instance.id, aws_account_region_instance_path(:aws_account_id=>@aws_account.id,:region_id=>name, :id=>instance.id) %></td>
+          <td><%= link_to instance.id, instance_path(:aws_account_id=>@aws_account.id,:region_id=>name, :id=>instance.id) %></td>
           <td><%= instance.tags['Name'] %></td>
           <td><%= name %></td>
         </tr>

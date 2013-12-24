@@ -1,15 +1,17 @@
 Holepunch::Application.routes.draw do
+  get "instances/show"
   resources :accounts, :only => [:index, :new, :create, :destroy]
-
-  resources :aws_accounts do
-    scope module: :aws_accounts do
-      resources :regions do
-        scope module: :regions do
-          resources :instances
-        end
-      end
-    end
-  end
+  resources :aws_accounts
+  get "/aws_accounts/:aws_account_id/instances/:id" => "aws_accounts/instances#show", :as => 'instance'
+  #resources :aws_accounts do
+  #  scope module: :aws_accounts do
+  #    resources :regions do
+  #      scope module: :regions do
+  #        resources :instances
+  #      end
+  #    end
+  #  end
+  #end
 
 
   devise_for :users

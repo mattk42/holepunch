@@ -61,3 +61,7 @@ gem 'protected_attributes'
 
 # AWS SDK
 gem 'aws-sdk'
+
+# Memcached to cache some api calls
+gem 'dalli'
+gem 'memcachier'

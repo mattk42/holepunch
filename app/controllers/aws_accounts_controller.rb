@@ -14,7 +14,7 @@ class AwsAccountsController < ApplicationController
     ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key)
     @regions=Hash.new
     ec2.regions.each do |region|
-      r_instances = region.instances
+      r_instances = instances_cached ec2,@aws_account.id,region
       if r_instances.count > 0
         @regions[region.name]=r_instances
       end
@@ -80,5 +80,11 @@ class AwsAccountsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def aws_account_params
       params.require(:aws_account).permit(:account_id, :name, :access_key, :secret_key)
+    end
+
+    def instances_cached(ec2,account_id,region)
+	Rails.cache.fetch region, :expires_in => 5.minutes do
+		ec2.regions[region.name].instances
+	end
     end
 end
