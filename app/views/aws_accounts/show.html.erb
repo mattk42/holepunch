@@ -23,7 +23,7 @@
     <tbody>
         <% @instances.each do |instance| %>
           <tr>
-            <td><%= link_to instance.id, aws_account_instance_path(:aws_account_id=>@aws_account.id,:region_id=>params[:region], :id=>instance.id) %></td>
+            <td><%= link_to instance.id, instance_path(:id=>@aws_account.id,:region_id=>params[:region], :instance_id=>instance.id) %></td>
             <td><%#= instance.tags['Name'] %></td>
           </tr>
         <% end %>

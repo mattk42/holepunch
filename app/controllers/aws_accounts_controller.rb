@@ -1,11 +1,12 @@
 class AwsAccountsController < ApplicationController
+  load_and_authorize_resource
   before_filter :authenticate_user!
-  before_action :set_aws_account, only: [:show, :refresh, :edit, :update, :destroy]
+  before_action :set_aws_account, only: [:show, :refresh, :edit, :update, :destroy, :instances]
 
   # GET /aws_accounts
   # GET /aws_accounts.json
   def index
-    @aws_accounts = AwsAccount.all
+    @aws_accounts = AwsAccount.where(:account_id=>current_user.account_id)
   end
   # GET /aws_accounts/1.json
   def show
@@ -66,6 +67,13 @@ class AwsAccountsController < ApplicationController
     end
   end
 
+  #GET /aws_accounts/1/instanes/i-1ie9382
+  def instances
+    ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key, :region => params[:region_id])
+    @instance=ec2.instances[params[:instance_id]]  
+    @reservations = Reservation.where(:instance_id=>@instance.id)
+  end
+
   # DELETE /aws_accounts/1
   # DELETE /aws_accounts/1.json
   def destroy
@@ -84,7 +92,7 @@ class AwsAccountsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def aws_account_params
-      params.require(:aws_account).permit(:account_id, :name, :access_key, :secret_key, :default_region)
+      params.require(:aws_account).permit(:account_id, :name, :access_key, :secret_key, :default_region, :instance_id)
     end
 
 end

@@ -2,6 +2,19 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
+
+    #Basic rights that all registered users have
+    if user != nil
+        can :create, AwsAccount
+        can [:read,:update,:delete, :instances], AwsAccount, :account_id=>user.account_id
+
+        can :create, Reservation
+        can [:read,:update,:delete], Reservation, :user_id=>user.id
+    end
+
+    #Rights that all users have, even if not yet signed in
+    can :create, Account
+
     # Define abilities for the passed in user here. For example:
     #
     #   user ||= User.new # guest user (not logged in)
