@@ -32,6 +32,8 @@ GEM
       nokogiri (>= 1.4.4, < 1.6.0)
       uuidtools (~> 2.1)
     bcrypt-ruby (3.0.0)
+    bootstrap-sass (3.0.2.1)
+      sass (~> 3.2)
     builder (3.1.4)
     cancan (1.6.10)
     coffee-rails (4.0.1)
@@ -139,6 +141,7 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk
+  bootstrap-sass
   cancan
   coffee-rails (~> 4.0.0)
   dalli
@@ -152,7 +155,6 @@ DEPENDENCIES
   protected_attributes
   rails (= 4.0.1)
   rufus-scheduler
-  sass
   sass-rails (~> 4.0.0)
   sdoc
   turbolinks
