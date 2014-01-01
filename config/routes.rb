@@ -1,8 +1,17 @@
 Holepunch::Application.routes.draw do
-  get "instances/show"
   resources :accounts, :only => [:index, :new, :create, :destroy]
-  resources :aws_accounts
-  get "/aws_accounts/:aws_account_id/instances/:id" => "aws_accounts/instances#show", :as => 'instance'
+
+  resources :aws_accounts do
+    resources :instances, :only => [:index, :show]
+    resources :reservations, :shallow => true
+  end
+
+
+  get "/reservations" => "reservations#index" , :as => "reservations"
+  #post "/aws_accounts/:aws_account_id/instances/:instance_id/reservations" => "reservations#create" , :as => "create_reservations"
+  #get "/aws_accounts/:aws_account_id/instances/:instance_id/reservations/new" => "reservations#new" , :as => "new_reservation"
+
+
   #resources :aws_accounts do
   #  scope module: :aws_accounts do
   #    resources :regions do

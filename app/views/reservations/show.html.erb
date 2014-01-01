@@ -1,0 +1,19 @@
+<%- model_class = Reservation -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => @aws_account.name.titleize %></h1>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Instance ID</th>
+      <th>Name</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr>
+          <td><%= link_to @reservation.id, reservation_path(@reservation.id) %></td>
+          <td><%#= instance.tags['Name'] %></td>
+        </tr>
+  </tbody>
+</table>

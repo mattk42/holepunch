@@ -53,6 +53,8 @@ GEM
       devise (>= 3.1.0)
     erubis (2.7.0)
     execjs (2.0.2)
+    font-awesome-rails (4.0.3.0)
+      railties (>= 3.2, < 5.0)
     hike (1.2.3)
     i18n (0.6.9)
     jbuilder (1.5.3)
@@ -65,10 +67,10 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    memcachier (0.0.2)
     mime-types (1.25.1)
     minitest (4.7.5)
     multi_json (1.8.2)
+    netaddr (1.5.0)
     nokogiri (1.5.6)
     orm_adapter (0.5.0)
     polyglot (0.3.3)
@@ -93,6 +95,8 @@ GEM
     rake (10.1.1)
     rdoc (3.12.2)
       json (~> 1.4)
+    rufus-scheduler (3.0.3)
+      tzinfo
     sass (3.2.13)
     sass-rails (4.0.1)
       railties (>= 4.0.0, < 5.0)
@@ -143,11 +147,13 @@ DEPENDENCIES
   dalli
   devise
   devise_invitable
+  font-awesome-rails
   jbuilder (~> 1.2)
   jquery-rails
-  memcachier
+  netaddr
   protected_attributes
   rails (= 4.0.1)
+  rufus-scheduler
   sass-rails (~> 4.0.0)
   sdoc
   sqlite3

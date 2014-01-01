@@ -1,0 +1,103 @@
+<div class="page-header">
+	<h1><%= @instance.id+" : "+@instance.tags['Name'].to_s %></h1>
+</div>
+
+  <div class="span9">
+  <h3>Reservations</h3>  <%= link_to "Create Reservation",
+            new_aws_account_reservation_path(:instance_id=>@instance.id,:region_id=>params[:region_id]),
+            :class => 'btn btn-primary' %>
+
+    <% if @reservations.count==0 %>
+      There are no reservations on this instance
+    <% else %>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>[Reservation <%= @reservations.count%>] IP Ranges</th>
+            <th>Port Range</th>
+            <th>Protocol</th>
+            <th>Relevant?</th>
+          </tr>
+        </thead>
+        <% @reservations.each do |reservation| %>
+          <tr>
+            <td><%=reservation.ip_address+"/32"%></td>
+            <td><%=reservation.start_port%></td>
+            <td><%=reservation.end_port%></td>
+            <td>
+              <% @valid = @valid|cidr_contains(reservation.ip_address+"/32",request.remote_ip) %>
+              <%if @valid %>
+                <i class="icon-ok-sign" style="color: green; font-size: 18pt;"></i>
+              <% else %>
+                <i class="icon-remove-sign" style="color: red; font-size: 18pt;"></i>
+              <% end %>
+          </td>
+          </tr>
+        <%end%>
+      </table>
+    <% end %>
+  </div>
+
+  <% @instance.security_groups.each do |sg| %>
+    <div class="span9">
+    <h3><%= sg.name %></h3>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>[Ingress] IP Ranges</th>
+            <th>Security Groups</th>
+            <th>Port Range</th>
+            <th>Protocol</th>
+            <th>Relevant?</th>
+          </tr>
+        </thead>
+        <% sg.ingress_ip_permissions.each do |p| %>
+          <tr>
+            <td><%=p.ip_ranges.join(', ')%></td>
+            <td><%=p.groups.map{ |sg| sg.name }.join(' ,')%></td>
+            <td><%=p.port_range%></td>
+            <td><%=p.protocol%></td>
+            <td>
+              <% @valid=false%>
+              <% p.ip_ranges.each do |cidr| %>
+                <% @valid = @valid|cidr_contains(cidr,request.remote_ip) %>
+              <% end %>
+              <%if @valid %>
+                <i class="icon-ok-sign" style="color: green; font-size: 18pt;"></i>
+              <% else %>
+                <i class="icon-remove-sign" style="color: red; font-size: 18pt;"></i>
+              <% end %>
+          </td>
+          </tr>
+        <% end %>
+      </table>
+
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>[Egress] IP Ranges</th>
+            <th>Security Groups</th>
+            <th>Port Range</th>
+            <th>Protocol</th>
+            <th>Relevant?</th>
+          </tr>
+        </thead>
+        <% sg.egress_ip_permissions.each do |p| %>
+          <tr>
+            <td><%=p.ip_ranges%></td>
+            <td><%=p.groups%></td>
+            <td><%=p.port_range%></td>
+            <td><%=p.protocol%></td>
+            <td>
+              <% p.ip_ranges.each do |cidr| %>
+                <% @valid = @valid&cidr_contains(cidr,request.remote_ip) %>
+              <% end %>
+              <%= @valid ? "green" : "red"  %>
+          </td> 
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  <% end %>

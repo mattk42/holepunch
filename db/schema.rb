@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131224021508) do
+ActiveRecord::Schema.define(version: 20131224194902) do
 
   create_table "accounts", force: true do |t|
     t.datetime "created_at"
@@ -27,6 +27,20 @@ ActiveRecord::Schema.define(version: 20131224021508) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "default_region"
+  end
+
+  create_table "reservations", force: true do |t|
+    t.integer  "aws_account_id"
+    t.integer  "user_id"
+    t.string   "sg_id"
+    t.string   "instance_id"
+    t.string   "region"
+    t.string   "ip_address"
+    t.integer  "start_port"
+    t.integer  "end_port"
+    t.datetime "end_time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", force: true do |t|

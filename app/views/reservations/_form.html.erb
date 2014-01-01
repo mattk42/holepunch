@@ -1,0 +1,46 @@
+<%= form_for shallow_args(@aws_account,@reservation), :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="control-group">
+
+  </div>
+  <div class="control-group">
+    <%= f.label :instance_id, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :instance_id, :class => 'text_field'%>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :region, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :region, :class => 'text_field'%>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :source_address, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :ip_address, :class => 'text_field', :value=>request.remote_ip %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :start_port, :class => 'control-label' %>
+    <div class="controls" >
+      <%= f.number_field :start_port, :class => 'number_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :end_port, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.number_field :end_port, :class => 'number_field' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :reservation_length, :class => 'control-label' %>
+    <div class="controls">
+      <%= number_field_tag :reservation_length, :class => 'number_field', :value=>'5' %> Minutes
+    </div>
+  </div>
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                :back, :class => 'btn' %>
+  </div>
+<% end %>

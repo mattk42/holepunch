@@ -1,24 +1,28 @@
 class AwsAccountsController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_aws_account, only: [:show, :edit, :update, :destroy]
+  before_action :set_aws_account, only: [:show, :refresh, :edit, :update, :destroy]
 
   # GET /aws_accounts
   # GET /aws_accounts.json
   def index
     @aws_accounts = AwsAccount.all
   end
-
-  # GET /aws_accounts/1
   # GET /aws_accounts/1.json
   def show
-    ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key)
-    @regions=Hash.new
-    ec2.regions.each do |region|
-      r_instances = instances_cached ec2,@aws_account.id,region
-      if r_instances.count > 0
-        @regions[region.name]=r_instances
+
+    # If no region is selected, use default region. If none set, us-west-1
+    if params[:region] == nil
+      if @aws_account.default_region != nil
+        params[:region] = @aws_account.default_region
+      else
+        params[:region] = "us-west-1"
       end
-    end
+    end 
+
+    ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key, :region => params[:region])
+    @regions=ec2.regions
+
+    @instances = ec2.instances
   end
 
   # GET /aws_accounts/new
@@ -51,6 +55,7 @@ class AwsAccountsController < ApplicationController
   # PATCH/PUT /aws_accounts/1.json
   def update
     respond_to do |format|
+      logger.info(aws_account_params) 
       if @aws_account.update(aws_account_params)
         format.html { redirect_to @aws_account, notice: 'Aws account was successfully updated.' }
         format.json { head :no_content }
@@ -79,12 +84,7 @@ class AwsAccountsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def aws_account_params
-      params.require(:aws_account).permit(:account_id, :name, :access_key, :secret_key)
+      params.require(:aws_account).permit(:account_id, :name, :access_key, :secret_key, :default_region)
     end
 
-    def instances_cached(ec2,account_id,region)
-	Rails.cache.fetch region, :expires_in => 5.minutes do
-		ec2.regions[region.name].instances
-	end
-    end
 end

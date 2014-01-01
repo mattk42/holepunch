@@ -52,6 +52,7 @@ gem 'devise_invitable'
 
 # Use twitter bootstrap for quick styles
 gem "twitter-bootstrap-rails"
+gem "font-awesome-rails"
 
 # Use cancan for controlling who can see what
 gem 'cancan'
@@ -62,6 +63,10 @@ gem 'protected_attributes'
 # AWS SDK
 gem 'aws-sdk'
 
-# Memcached to cache some api calls
 gem 'dalli'
-gem 'memcachier'
+
+#Used for checking if in a CIDR
+gem 'netaddr'
+
+#Used to schedule deleting security groups at the end of a reservation
+gem 'rufus-scheduler'
