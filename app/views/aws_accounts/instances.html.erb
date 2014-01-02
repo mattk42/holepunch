@@ -2,8 +2,22 @@
 	<h1><%= @instance.tags['Name'].to_s != "" ? @instance.tags['Name'] : @instance.id %></h1>
 </div>
 
-  <div class="span9">
-    <h3> Security Groups </h3>
+<h3>Intance Info</h3>
+<div class='span11 info-unit'>
+    <ul class="horizontal_ul">
+      <li><b>ID: </b><%= @instance.id %></li>
+      <li><b>Type: </b><%= @instance.instance_type %></li>
+      <li><b>IP: </b><%= @instance.ip_address %></li>
+      <li><b>DNS: </b><%= @instance.dns_name %></li>
+      <li><b>Keyname: </b><%= @instance.key_name %></li>
+      <li><b>Launchtime: </b><%= @instance.launch_time %></li>
+      <li><b>Status: </b><%= @instance.status %></li>
+    </ul>
+</div><br><br>
+
+
+<h3> Security Groups </h3>
+  <div class="span11">
     <% @instance.security_groups.each do |sg| %>
         <div class="panel-group" id="accordion">
           <div class="panel panel-default">
@@ -11,16 +25,17 @@
               <h4 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse<%= sg.name %>">
                   <%= sg.name %>
-                  <%= link_to "Create Reservation", new_aws_account_reservation_path(:aws_account_id=>params[:id],:instance_id=>@instance.id,:region_id=>params[:region_id], :sg_id=>sg.id), :class => 'btn-mini btn-primary' %>
+                  <%= link_to "Create Reservation", new_aws_account_reservation_path(:aws_account_id=>params[:id],:instance_id=>@instance.id,:region_id=>params[:region_id], :sg_id=>sg.id), :class => 'btn-mini btn-primary pull-right' %>
                 </a>
               </h4>
             </div>
-            <div id="collapse<%=sg.name%>" class="panel-collapse collapse in">
+            <div id="collapse<%=sg.name%>" class="panel-collapse collapse">
               <div class="panel-body">
                   <%= render :partial=>"sg", :object=>sg %>
               </div>
             </div>
           </div>
         </div>
+        <hr>
     <% end %>
   </div>

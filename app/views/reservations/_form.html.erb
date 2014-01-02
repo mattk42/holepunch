@@ -1,28 +1,8 @@
 <%= form_for shallow_args(@aws_account,@reservation), :html => { :class => 'form-horizontal' } do |f| %>
-  <div class="control-group">
-    <%= f.label :user_id, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :user_id, :class => 'text_field'%>
-    </div>
-  </div>
-  <div class="control-group">
-    <%= f.label :instance_id, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :instance_id, :class => 'text_field'%>
-    </div>
-  </div>
-  <div class="control-group">
-    <%= f.label :region, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :region, :class => 'text_field'%>
-    </div>
-  </div>
-  <div class="control-group">
-    <%= f.label :security_group , :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :sg_id, :class => 'text_field'%>
-    </div>
-  </div> 
+  <%= f.hidden_field :user_id, :class => 'text_field'%>
+  <%= f.hidden_field :instance_id, :class => 'text_field'%>
+  <%= f.hidden_field :region, :class => 'text_field'%>
+  <%= f.hidden_field :sg_id, :class => 'text_field'%>
   <div class="control-group">
     <%= f.label :source_address, :class => 'control-label' %>
     <div class="controls">
@@ -32,7 +12,7 @@
   <div class="control-group">
     <%= f.label :protocol, :class => 'control-label' %>
     <div class="controls">
-      <%#= f.text_field :protocol, :class => 'text_field'%>
+      <%= f.text_field :protocol, :class => 'text_field'%>
     </div>
   </div>
   <div class="control-group">

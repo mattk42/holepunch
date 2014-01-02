@@ -6,7 +6,6 @@ module ApplicationHelper
 
 	def cidr_contains(cidr,ip)
 		if cidr.include?('/0')
-			logger.info "Got a zero!"
 			return true
 		else
 			cidr = NetAddr::CIDR.create(cidr)
