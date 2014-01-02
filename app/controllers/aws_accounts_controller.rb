@@ -20,8 +20,9 @@ class AwsAccountsController < ApplicationController
       end
     end 
 
+    AWS.start_memoizing
     ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key, :region => params[:region])
-    @regions=ec2.regions
+    @regions = ec2.regions
 
     @instances = ec2.instances
   end
@@ -69,6 +70,7 @@ class AwsAccountsController < ApplicationController
 
   #GET /aws_accounts/1/instanes/i-1ie9382
   def instances
+    AWS.start_memoizing
     ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key, :region => params[:region_id])
     @instance=ec2.instances[params[:instance_id]]  
     @reservations = Reservation.where(:instance_id=>@instance.id)

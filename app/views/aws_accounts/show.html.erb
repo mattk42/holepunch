@@ -1,7 +1,8 @@
 <%- model_class = AwsAccount -%>
 <div class="page-header">
   <h1><%=t '.title', :default => @aws_account.name.titleize %></h1>
-  <form class='form-inline' method='get'>
+  <form class='form-inline pull-right' method='get'>
+    <b>Region:</b>
     <select name='region' onchange='this.form.submit()'>
       <% @regions.each do |r| %>
         <option value='<%=r.name%>' <%= 'Selected' if r.name == params[:region]%> ><%=r.name%></option>
@@ -18,15 +19,19 @@
       <tr>
         <th>Instance ID</th>
         <th>Name</th>
+        <th>IP Address</th>
       </tr>
     </thead>
     <tbody>
-        <% @instances.each do |instance| %>
-          <tr>
-            <td><%= link_to instance.id, instance_path(:id=>@aws_account.id,:region_id=>params[:region], :instance_id=>instance.id) %></td>
-            <td><%#= instance.tags['Name'] %></td>
-          </tr>
-        <% end %>
+          <% @instances.each do |instance| %>
+            <% if instance.public_ip_address != nil and instance.status.to_s=="running"%>
+              <tr>
+                <td><%= link_to instance.id, instance_path(:id=>@aws_account.id,:region_id=>params[:region], :instance_id=>instance.id) %></td>
+                <td><%= instance.tags['Name'].to_s %></td>
+                <td><%= instance.public_ip_address %></td>
+              </tr>
+            <% end %>
+          <% end %>
     </tbody>
   </table>
 <% end %>
