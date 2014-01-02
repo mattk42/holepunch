@@ -1,6 +1,9 @@
 <%= form_for shallow_args(@aws_account,@reservation), :html => { :class => 'form-horizontal' } do |f| %>
   <div class="control-group">
-
+    <%= f.label :user_id, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :user_id, :class => 'text_field'%>
+    </div>
   </div>
   <div class="control-group">
     <%= f.label :instance_id, :class => 'control-label' %>
@@ -15,9 +18,21 @@
     </div>
   </div>
   <div class="control-group">
+    <%= f.label :security_group , :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :sg_id, :class => 'text_field'%>
+    </div>
+  </div> 
+  <div class="control-group">
     <%= f.label :source_address, :class => 'control-label' %>
     <div class="controls">
       <%= f.text_field :ip_address, :class => 'text_field', :value=>request.remote_ip %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :protocol, :class => 'control-label' %>
+    <div class="controls">
+      <%#= f.text_field :protocol, :class => 'text_field'%>
     </div>
   </div>
   <div class="control-group">
@@ -35,7 +50,7 @@
   <div class="control-group">
     <%= f.label :reservation_length, :class => 'control-label' %>
     <div class="controls">
-      <%= number_field_tag :reservation_length, :class => 'number_field', :value=>'5' %> Minutes
+      <%= number_field_tag :reservation_length, :class => 'number_field', :value=>'5' %>
     </div>
   </div>
   <div class="form-actions">

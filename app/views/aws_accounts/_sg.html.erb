@@ -1,17 +1,27 @@
+
+<% instances=sg.instances.inject({}) { |instances, i| instances[i.id] = i.tags['Name']; instances } %>
+<b>Affected Instances:</b>
+<% sg.instances.each do |instance| %>
+  <%= link_to instance.tags['Name'] != nil ? instance.tags['Name'] : instance.id, instance_path(:aws_account_id=>params[:aws_account_id], :instance_id=>instance.id, :region_id=>params[:region_id]) %>
+<% end %>
+
+
+
+<h4>Ingress</h4>
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>[Ingress] IP Ranges</th>
-      <th>Security Groups</th>
+      <th>Sources</th>
       <th>Port Range</th>
       <th>Protocol</th>
       <th>Relevant?</th>
+      <th>Reservation End</th>
     </tr>
   </thead>
   <% sg.ingress_ip_permissions.each do |p| %>
     <tr>
-      <td><%=p.ip_ranges.join(', ')%></td>
-      <td><%=p.groups.map{ |sg| sg.name }.join(' ,')%></td>
+      <% sources=(p.ip_ranges + p.groups.map{ |sg| sg.name }).join(', ') %>
+      <td><%=sources%></td>
       <td><%=p.port_range%></td>
       <td><%=p.protocol%></td>
       <td>
@@ -24,16 +34,26 @@
         <% else %>
           <i class="icon-remove-sign" style="color: red; font-size: 18pt;"></i>
         <% end %>
-    </td>
+      </td>
+      <td>
+        <% if p.ip_ranges[0].to_s.include? "/32" and p.ip_ranges.count == 1 %>
+          <% reservation=Reservation.where(:ip_address=>p.ip_ranges[0].to_s)[0] %>
+          <% if reservation != nil %>
+            <% if reservation.user_id == current_user.id %>
+            <% end %>
+            <%= reservation.end_time %>
+          <% end %>
+        <% end %>
+      </td>
     </tr>
   <% end %>
 </table>
 
+<h4> Egress </h4>
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>[Egress] IP Ranges</th>
-      <th>Security Groups</th>
+      <th>Destinations</th>
       <th>Port Range</th>
       <th>Protocol</th>
       <th>Relevant?</th>
@@ -41,16 +61,21 @@
   </thead>
   <% sg.egress_ip_permissions.each do |p| %>
     <tr>
-      <td><%=p.ip_ranges%></td>
-      <td><%=p.groups%></td>
-      <td><%=p.port_range%></td>
+      <% destinations=(p.ip_ranges + p.groups.map{ |sg| sg.name }).join(', ') %>
+      <td><%=destinations%></td>
+      <td><%=p.port_range.to_s != "" ? p.port_range : "All" %></td>
       <td><%=p.protocol%></td>
       <td>
+        <% @valid=false%>
         <% p.ip_ranges.each do |cidr| %>
-          <% @valid = @valid&cidr_contains(cidr,request.remote_ip) %>
+          <% @valid = @valid|cidr_contains(cidr,request.remote_ip) %>
         <% end %>
-        <%= @valid ? "green" : "red"  %>
-    </td> 
+        <%if @valid %>
+          <i class="icon-ok-sign" style="color: green; font-size: 18pt;"></i>
+        <% else %>
+          <i class="icon-remove-sign" style="color: red; font-size: 18pt;"></i>
+        <% end %>
+    </td>
     </tr>
   <% end %>
 </table>

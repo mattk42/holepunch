@@ -21,7 +21,9 @@ class ReservationsController < ApplicationController
     @aws_account = AwsAccount.find(params[:aws_account_id])
     @reservation = Reservation.new
     @reservation.instance_id=params[:instance_id]
+    @reservation.user_id=current_user.id
     @reservation.region=params[:region_id]
+    @reservation.sg_id=params[:sg_id]
   end
 
   # POST /reservations
@@ -44,10 +46,11 @@ class ReservationsController < ApplicationController
     @aws_account = AwsAccount.find(@reservation.aws_account_id)
     ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key, :region => @reservation.region)
 
-    security_group=ec2.security_groups.create("holepunch-"+@reservation.instance_id)
+    security_group=ec2.security_groups[@reservation.sg_id]
+   logger.info security_group.id
     ip_addresses=[@reservation.ip_address]
     if @reservation.end_port != nil
-      ports=@reservation.start_port.to_s+".."+@reservation.end_port.to_s
+      ports=@reservation.start_port..@reservation.end_port
     else
       ports=@reservation.start_port
     end
@@ -56,13 +59,13 @@ class ReservationsController < ApplicationController
 
     #Schedule deleting the newly created SG
     scheduler.at @reservation.end_time do
-        security_group.delete
+        security_group.revoke_ingress :tcp, ports, *ip_addresses
         @reservation.delete
     end
 
     respond_to do |format|
       if @reservation.save
-        format.html { redirect_to @reservation, notice: 'Reservation was successfully created.' }
+        format.html { redirect_to instance_path(:id=>@reservation.aws_account_id,:instance_id=>@reservation.instance_id,:region_id=>@reservation.region), notice: 'Reservation was successfully created.' }
         format.json { render action: 'show', status: :created, location: @reservation }
       else
         format.html { render action: 'new' }
