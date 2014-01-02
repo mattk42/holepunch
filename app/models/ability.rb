@@ -6,10 +6,10 @@ class Ability
     #Basic rights that all registered users have
     if user != nil
         can :create, AwsAccount
-        can [:read,:update,:delete, :instances], AwsAccount, :account_id=>user.account_id
+        can [:read,:update,:destroy, :instances], AwsAccount, :account_id=>user.account_id
 
         can :create, Reservation
-        can [:read,:update,:delete], Reservation, :user_id=>user.id
+        can [:read,:update,:destroy], Reservation, :user_id=>user.id
     end
 
     #Rights that all users have, even if not yet signed in
