@@ -2,4 +2,28 @@
 <div class="page-header">
   <h1><%=t '.title', :default => [:'helpers.titles.new', 'New %{model}'], :model => model_class.model_name.human.titleize %></h1>
 </div>
+	<pre>
+Make sure this account has all of the required permissions: ec2:DescribeInstances, ec2:DescribeSecurityGroups, ec2:AuthorizeSecurityGroupIngree, and ec2:RevokeSecurityGroupIngress
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "ec2:DescribeInstance*",
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Action": "ec2:DescribeSecurityGroups",
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Action": "ec2:*SecurityGroupIngress",
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+</pre>
 <%= render :partial => 'form' %>
