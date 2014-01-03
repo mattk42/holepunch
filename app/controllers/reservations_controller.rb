@@ -47,7 +47,7 @@ class ReservationsController < ApplicationController
     ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key, :region => @reservation.region)
 
     security_group=ec2.security_groups[@reservation.sg_id]
-   logger.info security_group.id
+
     ip_addresses=[@reservation.ip_address]
     if @reservation.end_port != nil
       ports=@reservation.start_port..@reservation.end_port

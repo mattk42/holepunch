@@ -1,5 +1,7 @@
 Holepunch::Application.routes.draw do
-  resources :accounts, :only => [:index, :new, :create, :destroy]
+  resources :accounts, :only => [:index, :new, :create, :destroy] do
+    resources :admin, :only => [:index]
+  end
 
   resources :aws_accounts do
     #resources :instances, :only => [:index, :show]

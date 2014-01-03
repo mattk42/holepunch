@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_many :reservations, :dependent=>:destroy
   belongs_to :account, :inverse_of => :users
   validates :account, :presence => true
   devise :database_authenticatable, :registerable,
