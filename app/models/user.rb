@@ -4,6 +4,6 @@ class User < ActiveRecord::Base
   validates :account, :presence => true
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :timeoutable
+         :timeoutable, :invitable
   attr_accessible :email, :password, :password_confirmation, :remember_me, :account_id
 end
