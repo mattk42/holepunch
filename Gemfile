@@ -50,6 +50,7 @@ gem 'devise'
 
 # Add invitation support to devise
 gem 'devise_invitable'
+gem 'devise_google_authenticator', '0.3.8'
 
 # Use twitter bootstrap for quick styles
 gem "twitter-bootstrap-rails"
