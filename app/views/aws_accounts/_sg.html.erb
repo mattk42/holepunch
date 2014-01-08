@@ -16,6 +16,7 @@
       <th>Protocol</th>
       <th>Relevant?</th>
       <th>Reservation End</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <% sg.ingress_ip_permissions.each do |p| %>
@@ -25,26 +26,42 @@
       <td><%=p.port_range%></td>
       <td><%=p.protocol%></td>
       <td>
-        <% @valid=false%>
+        <% @valid=false %>
+
         <% p.ip_ranges.each do |cidr| %>
           <% @valid = @valid|cidr_contains(cidr,request.remote_ip) %>
         <% end %>
+
         <%if @valid %>
           <i class="icon-ok-sign" style="color: green; font-size: 18pt;"></i>
         <% else %>
           <i class="icon-remove-sign" style="color: red; font-size: 18pt;"></i>
         <% end %>
+
       </td>
+
+      <% if p.ip_ranges[0].to_s.include? "/32" and p.ip_ranges.count == 1 %>
+        <% reservation=Reservation.where(:ip_address=>p.ip_ranges[0].to_s,:deleted=>nil,:start_port=>p.port_range.begin,:end_port=>p.port_range.end)[0] %>
+      <% end %>
+       
+      <td>   
+      <% if reservation != nil %>
+        <%= reservation.end_time %>
+      <% end %>
+      </td>
+        
       <td>
-        <% if p.ip_ranges[0].to_s.include? "/32" and p.ip_ranges.count == 1 %>
-          <% reservation=Reservation.where(:ip_address=>p.ip_ranges[0].to_s)[0] %>
-          <% if reservation != nil %>
-            <% if reservation.user_id == current_user.id %>
-            <% end %>
-            <%= reservation.end_time %>
-          <% end %>
+      <% if reservation != nil %>
+        <% if reservation.user_id == current_user.id %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+            reservation_path(reservation),
+            :method => :delete,
+            :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+            :class => 'btn btn-mini btn-danger' %>
         <% end %>
+      <% end %>
       </td>
+
     </tr>
   <% end %>
 </table>

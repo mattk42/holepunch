@@ -5,7 +5,11 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th><%= model_class.human_attribute_name(:name) %></th>
+      <th>ID</th>
+      <th>IP Address</th>
+      <th>Port Range</th>
+      <th>Created At</th>
+      <th>Deleted At</th>
       <th><%=t '.actions', :default => t("helpers.actions") %></th>
     </tr>
   </thead>
@@ -13,9 +17,11 @@
     <% @reservations.each do |reservation| %>
       <tr>
         <td><%= link_to reservation.id , reservation_path(reservation.id) %></td>
+        <td><%= reservation.ip_address %></td>
+        <td><%= reservation.end_port != nil ? reservation.start_port..reservation.end_port : reservation.start_port %></td>
+        <td><%= reservation.end_time %></td>
+        <td><%= reservation.deleted_time %></td>
         <td>
-          <%= link_to t('.edit', :default => t("helpers.links.edit")),
-                      edit_reservation_path(reservation), :class => 'btn btn-mini' %>
           <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
                       reservation_path(reservation),
                       :method => :delete,

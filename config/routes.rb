@@ -5,7 +5,7 @@ Holepunch::Application.routes.draw do
 
   resources :aws_accounts do
     #resources :instances, :only => [:index, :show]
-    resources :reservations, :shallow => true
+    resources :reservations, :shallow => true, :only => [:index, :new, :create, :destroy]
   end
 
 

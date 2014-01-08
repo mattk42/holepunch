@@ -42,6 +42,11 @@ class ReservationsController < ApplicationController
     #Turn the source IP address into a CIDR 
     @reservation.ip_address=@reservation.ip_address+"/32"
 
+    #Reservation end port should always be set, even if it is the same as the start port
+    if @reservation.end_port == nil
+      @reservation.end_port=@reservation.start_port
+    end
+
     #Create the reservation in AWS
     @aws_account = AwsAccount.find(@reservation.aws_account_id)
     ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key, :region => @reservation.region)
@@ -59,8 +64,7 @@ class ReservationsController < ApplicationController
 
     #Schedule deleting the newly created SG
     scheduler.at @reservation.end_time do
-        security_group.revoke_ingress :tcp, ports, *ip_addresses
-        @reservation.delete
+        @reservation.destroy
     end
 
     respond_to do |format|
@@ -92,7 +96,8 @@ class ReservationsController < ApplicationController
   # DELETE /reservations/1
   # DELETE /reservations/1.json
   def destroy
-    @reservation.destroy
+    @reservation.destroy!
+
     respond_to do |format|
       format.html { redirect_to reservations_url }
       format.json { head :no_content }
