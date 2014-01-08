@@ -8,6 +8,7 @@ class AwsAccountsController < ApplicationController
   def index
     @aws_accounts = AwsAccount.where(:account_id=>current_user.account_id)
   end
+
   # GET /aws_accounts/1.json
   def show
 
@@ -24,7 +25,19 @@ class AwsAccountsController < ApplicationController
     ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key, :region => params[:region])
     @regions = ec2.regions
 
-    @instances = ec2.instances
+    #Filter the listed instance by the allowed tags if they exist
+    if current_user.tags.count > 0
+      keys=[]
+      values=[]
+      current_user.tags.each do |tag|
+        keys.push tag.key
+        values.push tag.value
+      end
+        @instances = ec2.instances.tagged(keys.join ",").tagged_values(values.join ",")
+    else
+     @instances = ec2.instances
+   end
+
   end
 
   # GET /aws_accounts/new
