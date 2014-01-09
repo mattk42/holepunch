@@ -97,24 +97,7 @@ class AwsAccountsController < ApplicationController
     @instance=ec2.instances[params[:instance_id]]
     @reservations = Reservation.where(:instance_id=>@instance.id)
 
-    #Go through each allowed tag and verify that the user has permissions for this instance. \
-    allowed=false
-    instance_tags=@instance.tags.to_h
-    if current_user.tags.count > 0
-      current_user.tags.each do |tag|
-        if instance_tags[tag.key]==tag.value
-          allowed=true
-          break
-        end
-      end
-    else
-      allowed=true
-    end
-
-    if !allowed
-      throw "Permission Denied"
-    end
-
+    checkInstancePermissions @instance, current_user
   end
 
   # DELETE /aws_accounts/1
@@ -136,6 +119,29 @@ class AwsAccountsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def aws_account_params
       params.require(:aws_account).permit(:account_id, :name, :access_key, :secret_key, :default_region, :instance_id)
+    end
+
+    private
+
+      #Go through each allowed tag and verify that the user has permissions for this instance. \
+      def checkInstancePermissions(instance, user)
+      allowed=false
+      instance_tags=instance.tags.to_h
+
+      if user.tags.count > 0
+        user.tags.each do |tag|
+          if instance_tags[tag.key]==tag.value
+            allowed=true
+            break
+          end
+        end
+      else
+        allowed=true
+      end
+
+      if !allowed
+        throw "Permission Denied"
+      end
     end
 
 end
