@@ -23,17 +23,31 @@ class AwsAccountsController < ApplicationController
 
     AWS.start_memoizing
     ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key, :region => params[:region])
+    #all_instances = ec2.instances
     @regions = ec2.regions
 
     #Filter the listed instance by the allowed tags if they exist
     if current_user.tags.count > 0
-      keys=[]
-      values=[]
+      #keys=[]
+      #values=[]
+      instance_hash=Hash.new
       current_user.tags.each do |tag|
-        keys.push tag.key
-        values.push tag.value
+        ec2.instances.tagged_with_value(tag.key,tag.value).each do |instance|
+          instance_hash[instance.id]=instance
+        end
+
+        #Here for testing
+        ec2.instances.tagged_with_value("ServerType","App").each do |instance|
+          instance_hash[instance.id]=instance
+        end
+
+        @instances=instance_hash.values
+        #keys.push tag.key
+        #values.push tag.value
       end
-        @instances = ec2.instances.tagged(keys.join ",").tagged_values(values.join ",")
+
+      #@instances = ec2.instances.tagged(keys).tagged_values(values)
+
     else
      @instances = ec2.instances
    end
