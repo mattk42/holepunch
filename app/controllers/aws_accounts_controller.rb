@@ -36,11 +36,6 @@ class AwsAccountsController < ApplicationController
           instance_hash[instance.id]=instance
         end
 
-        #Here for testing
-        ec2.instances.tagged_with_value("ServerType","App").each do |instance|
-          instance_hash[instance.id]=instance
-        end
-
         @instances=instance_hash.values
         #keys.push tag.key
         #values.push tag.value
@@ -99,8 +94,27 @@ class AwsAccountsController < ApplicationController
   def instances
     AWS.start_memoizing
     ec2 = AWS::EC2.new( :access_key_id => @aws_account.access_key, :secret_access_key => @aws_account.secret_key, :region => params[:region_id])
-    @instance=ec2.instances[params[:instance_id]]  
+    @instance=ec2.instances[params[:instance_id]]
     @reservations = Reservation.where(:instance_id=>@instance.id)
+
+    #Go through each allowed tag and verify that the user has permissions for this instance. \
+    allowed=false
+    instance_tags=@instance.tags.to_h
+    if current_user.tags.count > 0
+      current_user.tags.each do |tag|
+        if instance_tags[tag.key]==tag.value
+          allowed=true
+          break
+        end
+      end
+    else
+      allowed=true
+    end
+
+    if !allowed
+      throw "Permission Denied"
+    end
+
   end
 
   # DELETE /aws_accounts/1
