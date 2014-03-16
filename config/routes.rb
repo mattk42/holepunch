@@ -8,6 +8,7 @@ Holepunch::Application.routes.draw do
     resources :reservations, :shallow => true, :only => [:index, :new, :create, :destroy]
   end
 
+  resources :users
 
   get "/reservations" => "reservations#index" , :as => "reservations"
   get "/aws_accounts/:id/instances/" => "aws_accounts#instances", :as => "instances"
@@ -27,7 +28,7 @@ Holepunch::Application.routes.draw do
   #end
 
 
-  devise_for :users
+  devise_for :users, :controllers => {:registrations => "registrations"}, :path_prefix=>'d'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

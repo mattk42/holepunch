@@ -12,6 +12,11 @@ class Ability
         can [:read,:update,:destroy], Reservation, :user_id=>user.id
     end
 
+    #Admin only rights
+    if user.admin == true
+	can [:read,:create,:update,:destroy], User, :account_id=>user.account_id
+    end
+
     #Rights that all users have, even if not yet signed in
     can :create, Account
 
