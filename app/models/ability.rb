@@ -10,15 +10,15 @@ class Ability
 
         can :create, Reservation
         can [:read,:update,:destroy], Reservation, :user_id=>user.id
-    end
-
-    #Admin only rights
-    if user.admin == true
-	can [:read,:create,:update,:destroy], User, :account_id=>user.account_id
+	
+	    #Admin only rights
+	    if user.admin == true
+		can [:read,:create,:update,:destroy], User, :account_id=>user.account_id
+	    end
     end
 
     #Rights that all users have, even if not yet signed in
-    can :create, Account
+    can [:read,:create,:update,:destroy], Account
 
     # Define abilities for the passed in user here. For example:
     #
